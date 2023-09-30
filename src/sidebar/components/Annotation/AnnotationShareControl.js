@@ -92,10 +92,23 @@ function AnnotationShareControl({
   //   bears further discussion.
   const showShareLinks = inContextAvailable;
 
+  const text = annotation.target.map(
+    // @ts-ignore
+    target => (target?.selector ?? []).map(selector => selector?.exact ?? "" ).join("")
+  ).join("")
+  const shareid = annotation?.id
+  const link = annotation?.links?.incontext
+  const shareText = `
+${text}[^${shareid}]
+
+[^${shareid}]: [${link}](${link})
+`
+
   const copyShareLink = () => {
     try {
-      copyText(shareUri);
-      toastMessenger.success('Copied share link to clipboard');
+      // copyText(shareUri);
+      copyText(shareText);
+      toastMessenger.success('Copied share markdown link to clipboard');
     } catch (err) {
       toastMessenger.error('Unable to copy link');
     }
